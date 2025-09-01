@@ -24,4 +24,16 @@ class BankAccount {
             System.out.println("Insufficient funds");
         }  
     }
+
+    public boolean verifyPIN(int inputPIN) {
+        boolean valid = true;
+
+        if (inputPIN == PIN) {
+            System.out.println("PIN validated. Welcome to Java ATM.");
+        } else {
+            System.out.println("Invalid PIN");
+            valid = false;
+        }
+        return valid;
+    }
 }

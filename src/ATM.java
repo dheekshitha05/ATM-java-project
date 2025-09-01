@@ -7,24 +7,27 @@ class ATM {
 
     public static void main (String[] args) {
 
-        loginMenu();
-        int choice = Integer.parseInt(s.nextLine());
+        int choice1 = 0;
+        while (choice1 != 3) {
+            loginMenu();
+            choice1 = Integer.parseInt(s.nextLine());
 
-        BankAccount b = null;
+            BankAccount b = null;
 
-        if (choice == 1) {
-            b = createAccount();
-        } else if (choice == 2) {
-            b = login();
-        }
+            if (choice1 == 1) {
+                b = createAccount();
+            } else if (choice1 == 2) {
+                b = login();
+            }
 
-        choice = 0;
+            int choice2 = 0;
 
-        if (b != null) {
-            while (choice != 4) {
-                displayMenu();
-                choice = Integer.parseInt(s.nextLine());
-                userMenu(choice, b);
+            if (b != null) {
+                while (choice2 != 4) {
+                    displayMenu();
+                    choice2 = Integer.parseInt(s.nextLine());
+                    userMenu(choice2, b);
+                }
             }
         }
     }
@@ -64,20 +67,26 @@ class ATM {
         System.out.println("-----------------------------");
         System.out.println("(1) Create new account");
         System.out.println("(2) Login to existing account");
-        System.out.println("(2) Exit ATM");
+        System.out.println("(3) Exit ATM");
         System.out.println("-----------------------------");
     }
 
     public static BankAccount createAccount() {
+        BankAccount b;
+
         System.out.println("Enter name of account: ");
         String name = s.nextLine();
 
-        System.out.println("Create a 4 digit PIN: ");
-        int userPIN = Integer.parseInt(s.nextLine());
+        if (accounts.containsKey(name)) {
+            System.out.println("This account already exists.");
+            b = accounts.get(name);
+        }  else {
+            System.out.println("Create a 4 digit PIN: ");
+            int userPIN = Integer.parseInt(s.nextLine());
 
-        BankAccount b = new BankAccount(name, userPIN);
-        accounts.put(name, b);
-
+            b = new BankAccount(name, userPIN);
+            accounts.put(name, b);
+        }
         return b;
     }
 
@@ -87,7 +96,19 @@ class ATM {
 
         if (accounts.containsKey(name)) {
             BankAccount b = accounts.get(name);
-            return b;
+
+            boolean valid = false;
+            for(int i = 0; i < 3; i++) {
+                System.out.println("Enter your 4 digit PIN: ");
+                int inputPIN = Integer.parseInt(s.nextLine());
+                valid = b.verifyPIN(inputPIN);
+
+                if (valid == true) {
+                    return b;
+                }
+            }
+            System.out.println("3 Incorrect attempts, try again later!");
+            return null;
         } else {
             System.out.println("Account does not exist.");
             return null;
