@@ -1,23 +1,31 @@
 import java.util.Scanner;
+import java.util.HashMap;
 
 class ATM {
     public static Scanner s = new Scanner (System.in);
+    private static HashMap<String, BankAccount> accounts = new HashMap<>();
 
     public static void main (String[] args) {
-        System.out.println("Enter your name: ");
-        String name = s.nextLine();
-     
-        System.out.println("Choose a PIN: ");
-        int PIN = Integer.parseInt(s.nextLine());
 
-        BankAccount b = new BankAccount(name, PIN);
+        loginMenu();
+        int choice = Integer.parseInt(s.nextLine());
 
-        int choice = 0;
-        while (choice != 4) {
-            displayMenu();
-            choice = Integer.parseInt(s.nextLine());
-            
-            userMenu(choice, b);
+        BankAccount b = null;
+
+        if (choice == 1) {
+            b = createAccount();
+        } else if (choice == 2) {
+            b = login();
+        }
+
+        choice = 0;
+
+        if (b != null) {
+            while (choice != 4) {
+                displayMenu();
+                choice = Integer.parseInt(s.nextLine());
+                userMenu(choice, b);
+            }
         }
     }
 
@@ -46,7 +54,43 @@ class ATM {
         System.out.println("(1) Check Balance");
         System.out.println("(2) Deposit");
         System.out.println("(3) Withdraw");
-        System.out.println("(4) Exit ATM");
+        System.out.println("(4) Log out");
         System.out.println("----------------------------");
+    }
+
+    public static void loginMenu () {
+        System.out.println("-----------------------------");
+        System.out.println("     Welcome to Java ATM     ");
+        System.out.println("-----------------------------");
+        System.out.println("(1) Create new account");
+        System.out.println("(2) Login to existing account");
+        System.out.println("(2) Exit ATM");
+        System.out.println("-----------------------------");
+    }
+
+    public static BankAccount createAccount() {
+        System.out.println("Enter name of account: ");
+        String name = s.nextLine();
+
+        System.out.println("Create a 4 digit PIN: ");
+        int userPIN = Integer.parseInt(s.nextLine());
+
+        BankAccount b = new BankAccount(name, userPIN);
+        accounts.put(name, b);
+
+        return b;
+    }
+
+    public static BankAccount login() {
+        System.out.println("Enter name of account: ");
+        String name = s.nextLine();
+
+        if (accounts.containsKey(name)) {
+            BankAccount b = accounts.get(name);
+            return b;
+        } else {
+            System.out.println("Account does not exist.");
+            return null;
+        }
     }
 }
